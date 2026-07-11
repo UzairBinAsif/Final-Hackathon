@@ -18,6 +18,6 @@ const startServer = async () => {
   }
 };
 
-startServer();
+await startServer();
 
 export default app;
