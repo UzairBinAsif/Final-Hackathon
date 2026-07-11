@@ -353,7 +353,7 @@ export default function MyIssuesPage() {
                   value={maintNotes}
                   onChange={(e) => setMaintNotes(e.target.value)}
                   placeholder="Describe details of work done, cleaning, calibrating, or replacements..."
-                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                 />
               </div>
 
@@ -368,7 +368,7 @@ export default function MyIssuesPage() {
                     value={maintTime}
                     onChange={(e) => setMaintTime(e.target.value)}
                     placeholder="e.g. 45 mins or 2 hours"
-                    className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                   />
                 </div>
 
@@ -383,7 +383,7 @@ export default function MyIssuesPage() {
                     step="any"
                     value={maintCost}
                     onChange={(e) => setMaintCost(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                   />
                 </div>
               </div>
@@ -397,7 +397,7 @@ export default function MyIssuesPage() {
                   value={maintParts}
                   onChange={(e) => setMaintParts(e.target.value)}
                   placeholder="e.g. O-Ring, Grease, Spark Plug"
-                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                 />
               </div>
 

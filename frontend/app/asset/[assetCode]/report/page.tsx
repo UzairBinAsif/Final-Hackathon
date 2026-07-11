@@ -192,7 +192,7 @@ export default function ReportIssuePage() {
                   value={complaintText}
                   onChange={(e) => setComplaintText(e.target.value)}
                   placeholder="e.g. The motor makes a loud screeching noise when started and there is a mild smell of burnt rubber coming from the drive belt."
-                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-zinc-50"
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export default function ReportIssuePage() {
                         required
                         value={finalTitle}
                         onChange={(e) => setFinalTitle(e.target.value)}
-                        className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-50"
+                        className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                       />
                     </div>
 
@@ -272,7 +272,7 @@ export default function ReportIssuePage() {
                         <select
                           value={finalCategory}
                           onChange={(e) => setFinalCategory(e.target.value)}
-                          className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-50"
+                          className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                         >
                           {categories.map((c) => (
                             <option key={c} value={c}>
@@ -289,7 +289,7 @@ export default function ReportIssuePage() {
                         <select
                           value={finalPriority}
                           onChange={(e) => setFinalPriority(e.target.value)}
-                          className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-50"
+                          className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                         >
                           {priorities.map((p) => (
                             <option key={p} value={p}>
@@ -309,7 +309,7 @@ export default function ReportIssuePage() {
                         required
                         value={finalDescription}
                         onChange={(e) => setFinalDescription(e.target.value)}
-                        className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-50"
+                        className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                       />
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export default function ReportIssuePage() {
                       value={reporterName}
                       onChange={(e) => setReporterName(e.target.value)}
                       placeholder="e.g. Jane Smith"
-                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                     />
                   </div>
 
@@ -339,7 +339,7 @@ export default function ReportIssuePage() {
                       value={reporterContact}
                       onChange={(e) => setReporterContact(e.target.value)}
                       placeholder="e.g. extension 402 or email/phone"
-                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
                     />
                   </div>
                 </div>
