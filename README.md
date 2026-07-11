@@ -27,6 +27,30 @@ These deployment choices allow the UI to scale globally (Vercel) while keeping s
 - **Design & DX:** Tailwind CSS + components, accessible layouts, and Vercel preview deployments for fast iteration and demoing to stakeholders.
 - **Deploy-ready:** Environment-driven configuration (`.env`), deployment targets (Vercel + Render), and clear separation of concerns between frontend and backend make this repo ready for production demos.
 
+## Advanced Track: API Documentation & Database Models
+
+For maintainers and evaluators who want to explore the project deeper (Advanced Track), the repository is structured so you can add or consume machine-readable API docs and visual database diagrams:
+
+- **API documentation / Postman collection**: A Postman collection is a convenient way to bundle the most important API flows (auth, assets, issues, public reporting, admin actions). If present, place it at `docs/postman_collection.json` or export a collection from Postman and include it in `docs/`. To generate locally, exercise these representative endpoints against your running backend (`http://localhost:6500/api`):
+   - `POST /api/auth/login` — obtain JWT token
+   - `GET /api/assets` — list assets (protected)
+   - `POST /api/assets` — create asset (admin)
+   - `GET /api/public/asset/:assetCode` — public asset view
+   - `GET /api/issues` — list issues (protected)
+   - `POST /api/public/issues/:assetCode` — report an issue (public)
+
+   Include example request bodies, required headers (Authorization: Bearer <token>), and sample responses for each item.
+
+- **Database schema / data-model diagram**: For clarity in technical reviews, include an ER or data-model diagram in `docs/db-schema.png` or `docs/db-schema.svg` that highlights the main collections and relations:
+   - `User` (id, name, email, role)
+   - `Asset` (id, name, assetCode, category, location, status, assignedTechnician)
+   - `Issue` (id, asset, title, description, priority, status, assignedTechnician)
+   - `AssetHistory` / `MaintenanceRecord` (audit trail references)
+
+   If a diagram file isn't included, you can generate one from the Mongoose models (found under `backend/src/models/`) using tools like dbdiagram.io, draw.io, or schema exporters.
+
+These resources make the project easy to evaluate in an interview/demo setting and provide a clear path for automated API tests or CI checks.
+
 
 ---
 
