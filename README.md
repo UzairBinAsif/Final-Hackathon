@@ -11,6 +11,25 @@ MaintainIQ is a responsive web application designed to manage facilities, log eq
 
 ---
 
+## Deployment & Architecture
+
+- **Frontend (Production):** Deployed on Vercel — fast global CDN, automatic Next.js optimizations, and preview deployments on pull requests. Use the Vercel dashboard or `NEXT_PUBLIC_API_URL` to point the client at the production API.
+- **Backend (Production):** Deployed on Render — Node/Express API with MongoDB connectivity. The API exposes endpoints under `/api/*` and uses JWT for protected routes.
+- **OpenAI / AI Integration:** The backend consumes OpenAI's API (chat/completions) for AI triage and suggestion features. Provide `OPENAI_API_KEY` in the `backend/.env` for full AI functionality. When the key is missing, the app falls back to safe diagnostics to avoid runtime failures.
+
+These deployment choices allow the UI to scale globally (Vercel) while keeping server-side logic and secret keys on a managed provider (Render).
+
+## Key Technologies & Integrations (What Makes This Project Stand Out)
+
+- **Modern full-stack framework:** Next.js (app router + TypeScript) for server/client rendering, paired with an Express API for flexible server-side workflows.
+- **AI-first features:** OpenAI API integration for complaint triage, title/categorization suggestions, and prioritized recommendations — improves technician workflows and reduces triage time.
+- **Realtime-ready data flow:** Axios client with JWT auth + clearly separated public vs protected routes; audit/history logs for traceability and QR code generation for asset tagging.
+- **Design & DX:** Tailwind CSS + components, accessible layouts, and Vercel preview deployments for fast iteration and demoing to stakeholders.
+- **Deploy-ready:** Environment-driven configuration (`.env`), deployment targets (Vercel + Render), and clear separation of concerns between frontend and backend make this repo ready for production demos.
+
+
+---
+
 ## Getting Started
 
 ### 1. Database Setup
