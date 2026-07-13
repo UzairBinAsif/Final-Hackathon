@@ -80,7 +80,7 @@ const issueSchema = new mongoose.Schema(
 );
 
 // Pre-save hook to auto-generate issueNumber (e.g. ISSUE-1001)
-issueSchema.pre("save", async function (next) {
+issueSchema.pre("save", async function () {
   if (!this.issueNumber) {
     try {
       const IssueModel = mongoose.model("issues", issueSchema);
@@ -95,10 +95,9 @@ issueSchema.pre("save", async function (next) {
       }
       this.issueNumber = `ISSUE-${nextNum}`;
     } catch (error) {
-      return next(error);
+      throw error;
     }
   }
-  next();
 });
 
 const Issue = mongoose.model("issues", issueSchema);
