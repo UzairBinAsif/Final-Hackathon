@@ -94,8 +94,8 @@ export default function AssetsPage() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-4 rounded-xl border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
-        <div className="relative w-full md:flex-1">
+      <div className="flex flex-col gap-3 items-stretch sm:flex-row sm:items-center bg-white p-3 sm:p-4 rounded-xl border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
+        <div className="relative w-full sm:flex-1">
           <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-zinc-400" />
           <input
             type="text"
@@ -105,11 +105,11 @@ export default function AssetsPage() {
             className="w-full rounded-lg border border-zinc-200 bg-zinc-50 pl-10 pr-4 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
           />
         </div>
-        <div className="flex flex-wrap md:flex-nowrap gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+            className="flex-1 sm:flex-initial rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
           >
             <option value="">All Categories</option>
             {categories.map((c) => (
@@ -121,7 +121,7 @@ export default function AssetsPage() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+            className="flex-1 sm:flex-initial rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
           >
             <option value="">All Statuses</option>
             {statuses.map((s) => (
@@ -140,8 +140,8 @@ export default function AssetsPage() {
         </div>
       </div>
 
-      {/* Assets Table */}
-      <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden dark:bg-zinc-900 dark:border-zinc-800">
+      {/* Assets Display - Table on Desktop, Cards on Mobile */}
+      <div className="bg-white rounded-xl border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
         {loading && assets.length === 0 ? (
           <div className="p-8 text-center text-sm text-zinc-500">
             Fetching assets...
@@ -155,36 +155,23 @@ export default function AssetsPage() {
             No assets found matching the criteria.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead className="bg-zinc-50 border-b border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800">
-                <tr>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Asset Code</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Name</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Category</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Location</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Condition</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Status</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-250 dark:divide-zinc-800">
+          <>
+            {/* Mobile Cards View */}
+            <div className="block md:hidden">
+              <div className="space-y-3 p-4">
                 {assets.map((asset) => (
-                  <tr key={asset._id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-950/20">
-                    <td className="px-6 py-4 font-mono font-semibold text-zinc-900 dark:text-zinc-50">
-                      {asset.assetCode}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-50">{asset.name}</td>
-                    <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">{asset.category}</td>
-                    <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">{asset.location}</td>
-                    <td className="px-6 py-4">
-                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                        {asset.condition || "Fair"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
+                  <Link
+                    key={asset._id}
+                    href={`/dashboard/assets/${asset._id}`}
+                    className="block p-4 border border-zinc-200 rounded-lg hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50 transition-colors"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="font-mono font-semibold text-sm text-zinc-900 dark:text-zinc-50">{asset.assetCode}</div>
+                        <div className="font-medium text-zinc-900 dark:text-zinc-50">{asset.name}</div>
+                      </div>
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${
                           asset.status === "Operational"
                             ? "bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400"
                             : asset.status === "Issue Reported"
@@ -196,20 +183,77 @@ export default function AssetsPage() {
                       >
                         {asset.status}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Link
-                        href={`/dashboard/assets/${asset._id}`}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-900 hover:text-zinc-600 dark:text-zinc-50 dark:hover:text-zinc-300"
-                      >
-                        View Details <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </td>
-                  </tr>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-zinc-500 dark:text-zinc-400 mb-3">
+                      <div><span className="font-medium">Category:</span> {asset.category}</div>
+                      <div><span className="font-medium">Location:</span> {asset.location}</div>
+                      <div><span className="font-medium">Condition:</span> {asset.condition || "Fair"}</div>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-900 dark:text-zinc-50">
+                      View Details <ArrowRight className="h-3 w-3" />
+                    </div>
+                  </Link>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full border-collapse text-left text-sm">
+                <thead className="bg-zinc-50 border-b border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800">
+                  <tr>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Asset Code</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Name</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Category</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Location</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Condition</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400">Status</th>
+                    <th className="px-6 py-3 font-semibold text-zinc-500 dark:text-zinc-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-250 dark:divide-zinc-800">
+                  {assets.map((asset) => (
+                    <tr key={asset._id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-950/20">
+                      <td className="px-6 py-4 font-mono font-semibold text-zinc-900 dark:text-zinc-50">
+                        {asset.assetCode}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-50">{asset.name}</td>
+                      <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">{asset.category}</td>
+                      <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">{asset.location}</td>
+                      <td className="px-6 py-4">
+                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                          {asset.condition || "Fair"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            asset.status === "Operational"
+                              ? "bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                              : asset.status === "Issue Reported"
+                              ? "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400"
+                              : asset.status === "Under Maintenance"
+                              ? "bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400"
+                              : "bg-yellow-50 text-yellow-700 dark:bg-yellow-950/30 dark:text-yellow-400"
+                          }`}
+                        >
+                          {asset.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Link
+                          href={`/dashboard/assets/${asset._id}`}
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-900 hover:text-zinc-600 dark:text-zinc-50 dark:hover:text-zinc-300"
+                        >
+                          View Details <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -110,60 +110,106 @@ export default function TechniciansPage() {
 
       {/* Users Table */}
       <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <table className="w-full text-sm">
-          <thead className="bg-zinc-50 dark:bg-zinc-950">
-            <tr>
-              <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Name</th>
-              <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Email</th>
-              <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Role</th>
-              <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Joined</th>
-              <th className="px-6 py-3 text-center font-semibold text-zinc-900 dark:text-zinc-50">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {filteredUsers.length === 0 ? (
+        <div className="hidden md:block">
+          <table className="w-full text-sm">
+            <thead className="bg-zinc-50 dark:bg-zinc-950">
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-zinc-500 dark:text-zinc-400">
-                  No users found
-                </td>
+                <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Name</th>
+                <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Email</th>
+                <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Role</th>
+                <th className="px-6 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-50">Joined</th>
+                <th className="px-6 py-3 text-center font-semibold text-zinc-900 dark:text-zinc-50">Actions</th>
               </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              {filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-zinc-500 dark:text-zinc-400">
+                    No users found
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((user) => (
+                  <tr key={user._id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                    <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-50">{user.name}</td>
+                    <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-zinc-400" />
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                          user.role === "admin"
+                            ? "bg-purple-100 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400"
+                            : "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"
+                        }`}
+                      >
+                        <Shield className="h-3 w-3" />
+                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20 transition-all cursor-pointer"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">Remove</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards View */}
+        <div className="block md:hidden">
+          <div className="space-y-3 p-4">
+            {filteredUsers.length === 0 ? (
+              <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">
+                No users found
+              </div>
             ) : (
               filteredUsers.map((user) => (
-                <tr key={user._id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                  <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-50">{user.name}</td>
-                  <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-zinc-400" />
-                    {user.email}
-                  </td>
-                  <td className="px-6 py-4">
+                <div key={user._id} className="p-4 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="font-medium text-zinc-900 dark:text-zinc-50">{user.name}</div>
+                      <div className="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-1">
+                        <Mail className="h-3 w-3" />
+                        {user.email}
+                      </div>
+                    </div>
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${
                         user.role === "admin"
                           ? "bg-purple-100 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400"
                           : "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"
                       }`}
                     >
-                      <Shield className="h-3 w-3" />
                       {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleDeleteUser(user._id)}
-                      className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20 transition-all cursor-pointer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Remove
-                    </button>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                    Joined: {new Date(user.createdAt).toLocaleDateString()}
+                  </div>
+                  <button
+                    onClick={() => handleDeleteUser(user._id)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20 transition-all cursor-pointer border border-red-200 dark:border-red-900"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Remove User
+                  </button>
+                </div>
               ))
             )}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   );
