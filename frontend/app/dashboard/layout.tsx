@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, PlusCircle, LogOut, ShieldAlert, ClipboardList } from "lucide-react";
+import { LayoutDashboard, PlusCircle, LogOut, ShieldAlert, ClipboardList, Wrench, Users } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
@@ -53,12 +53,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside className="w-64 border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 flex flex-col">
         <div className="p-6 border-b border-zinc-150 dark:border-zinc-800">
-          <Link href="/dashboard/assets" className="flex items-center gap-2 font-bold text-lg text-zinc-900 dark:text-zinc-50">
+          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg text-zinc-900 dark:text-zinc-50">
             <LayoutDashboard className="h-5 w-5 text-zinc-900 dark:text-zinc-50" />
             <span>MaintainIQ</span>
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            <span>Overview</span>
+          </Link>
           <Link
             href="/dashboard/assets"
             className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
@@ -72,6 +79,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <PlusCircle className="h-4 w-4" />
             <span>Add Asset</span>
+          </Link>
+          <Link
+            href="/dashboard/issues"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          >
+            <Wrench className="h-4 w-4" />
+            <span>Issues Management</span>
+          </Link>
+          <Link
+            href="/dashboard/users"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          >
+            <Users className="h-4 w-4" />
+            <span>Technicians</span>
           </Link>
         </nav>
         <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
