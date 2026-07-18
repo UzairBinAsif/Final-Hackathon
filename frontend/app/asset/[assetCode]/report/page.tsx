@@ -32,6 +32,8 @@ export default function ReportIssuePage() {
   const [complaintText, setComplaintText] = useState("");
   const [reporterName, setReporterName] = useState("");
   const [reporterContact, setReporterContact] = useState("");
+  const [reporterEmail, setReporterEmail] = useState("");
+  const [analysisStarted, setAnalysisStarted] = useState(false);
 
   // AI & Triage states
   const [triageLoading, setTriageLoading] = useState(false);
@@ -68,10 +70,15 @@ export default function ReportIssuePage() {
   }, [assetCode]);
 
   const handleAnalyzeAI = async () => {
-    if (!complaintText.trim()) return;
+    if (!complaintText.trim() || !reporterName.trim() || !reporterContact.trim() || !reporterEmail.trim()) {
+      setTriageError("Please provide your name, phone number, email, and issue description before analyzing.");
+      return;
+    }
+
     setTriageLoading(true);
     setTriageError(null);
     setTriageResult(null);
+    setAnalysisStarted(true);
 
     try {
       const payload = {
@@ -112,8 +119,9 @@ export default function ReportIssuePage() {
         description: finalDescription.trim(),
         category: finalCategory,
         priority: finalPriority,
-        reporterName: reporterName.trim() || "Anonymous Reporter",
-        reporterContact: reporterContact.trim() || undefined,
+        reporterName: reporterName.trim(),
+        reporterEmail: reporterEmail.trim().toLowerCase(),
+        reporterContact: reporterContact.trim(),
       };
 
       await api.post(`/public/issues/${assetCode}`, payload);
@@ -180,38 +188,106 @@ export default function ReportIssuePage() {
 
         {!submitSuccess && (
           <div className="space-y-6">
-            {/* Step 1: Complaint Prompt */}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
-                  Describe what is wrong (Plain text)
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={complaintText}
-                  onChange={(e) => setComplaintText(e.target.value)}
-                  placeholder="e.g. The motor makes a loud screeching noise when started and there is a mild smell of burnt rubber coming from the drive belt."
-                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
-                />
-              </div>
+            {!analysisStarted && (
+              <div className="space-y-6">
+                {/* Step 1: Complaint Prompt */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={reporterName}
+                        onChange={(e) => setReporterName(e.target.value)}
+                        placeholder="e.g. Jane Smith"
+                        className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                      />
+                    </div>
 
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={handleAnalyzeAI}
-                  disabled={triageLoading || !complaintText.trim()}
-                  className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 disabled:opacity-50 cursor-pointer"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  {triageLoading ? "Analyzing with AI..." : "Analyze with AI"}
-                </button>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={reporterContact}
+                        onChange={(e) => setReporterContact(e.target.value)}
+                        placeholder="e.g. +1 555 0100"
+                        className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={reporterEmail}
+                        onChange={(e) => setReporterEmail(e.target.value)}
+                        placeholder="e.g. jane@example.com"
+                        className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                      Describe what is wrong (Plain text)
+                    </label>
+                    <textarea
+                      rows={4}
+                      required
+                      value={complaintText}
+                      onChange={(e) => setComplaintText(e.target.value)}
+                      placeholder="e.g. The motor makes a loud screeching noise when started and there is a mild smell of burnt rubber coming from the drive belt."
+                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                    />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleAnalyzeAI}
+                      disabled={triageLoading || !complaintText.trim() || !reporterName.trim() || !reporterContact.trim() || !reporterEmail.trim()}
+                      className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 disabled:opacity-50 cursor-pointer"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {triageLoading ? "Analyzing with AI..." : "Analyze with AI"}
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Step 2: Form Triage Results (either AI generated or manual edit) */}
-            {(triageResult || triageError || finalTitle) && (
+            {(analysisStarted && (triageResult || triageError || finalTitle)) && (
               <form onSubmit={handleSubmitIssue} className="border-t border-zinc-150 pt-6 dark:border-zinc-800 space-y-6">
+                <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/20">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+                    Reporter Details
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                    <div className="rounded-lg bg-white px-3 py-2 border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
+                      <div className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Name</div>
+                      <div className="mt-1 font-medium text-zinc-900 dark:text-zinc-50">{reporterName || "Not provided"}</div>
+                    </div>
+                    <div className="rounded-lg bg-white px-3 py-2 border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
+                      <div className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Phone</div>
+                      <div className="mt-1 font-medium text-zinc-900 dark:text-zinc-50">{reporterContact || "Not provided"}</div>
+                    </div>
+                    <div className="rounded-lg bg-white px-3 py-2 border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
+                      <div className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Email</div>
+                      <div className="mt-1 font-medium text-zinc-900 dark:text-zinc-50 break-all">{reporterEmail || "Not provided"}</div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-150 dark:bg-zinc-950/20 dark:border-zinc-800">
                   <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-50 mb-3 flex items-center gap-2">
                     <Info className="h-4 w-4 text-zinc-500" />
@@ -312,35 +388,6 @@ export default function ReportIssuePage() {
                         className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
                       />
                     </div>
-                  </div>
-                </div>
-
-                {/* Reporter specifications */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
-                      Your Name (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={reporterName}
-                      onChange={(e) => setReporterName(e.target.value)}
-                      placeholder="e.g. Jane Smith"
-                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
-                      Contact Info (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={reporterContact}
-                      onChange={(e) => setReporterContact(e.target.value)}
-                      placeholder="e.g. extension 402 or email/phone"
-                      className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950"
-                    />
                   </div>
                 </div>
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, PlusCircle, LogOut, ShieldAlert, ClipboardList, Wrench, Users, Menu, X } from "lucide-react";
+import { LayoutDashboard, PlusCircle, LogOut, ShieldAlert, ClipboardList, Wrench, Users, Menu, X, FileText } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
@@ -101,6 +101,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <Wrench className="h-4 w-4" />
             <span>Issues</span>
+          </Link>
+          <Link
+            href="/dashboard/reports"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Reports</span>
           </Link>
           <Link
             href="/dashboard/users"

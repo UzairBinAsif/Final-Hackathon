@@ -31,11 +31,11 @@ const register = async (req, res, next) => {
       });
     }
 
-    // Validate role if provided
-    if (role && !["admin", "technician"].includes(role)) {
+    // Only allow technician registrations from the public register flow
+    if (role && role !== "technician") {
       return res.status(400).json({
         status: false,
-        message: "Role must be either 'admin' or 'technician'",
+        message: "Only technician registrations are allowed",
       });
     }
 
@@ -57,7 +57,7 @@ const register = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "technician", // default role
+      role: "technician",
     });
 
     await newUser.save();

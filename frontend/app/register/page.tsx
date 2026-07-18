@@ -12,18 +12,25 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("technician");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const role = "technician";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await registerUser(name, email, password, role);
+      await registerUser(name, email, password);
       setSuccess(true);
       setTimeout(() => {
         router.push("/login");
@@ -105,15 +112,29 @@ export default function RegisterPage() {
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
-              Select Role
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+              Role
             </label>
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+              disabled
+              className="w-full cursor-not-allowed rounded-lg border border-zinc-200 bg-zinc-100 px-3.5 py-2 text-sm text-zinc-500 outline-none transition-all dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
             >
               <option value="technician">Technician</option>
-              <option value="admin">Administrator (Admin)</option>
             </select>
           </div>
 

@@ -3,6 +3,69 @@ import Asset from "../models/AssetModel.js";
 import User from "../models/UserModel.js";
 import { logAssetHistory } from "../helpers/historyHelper.js";
 
+const ACTIVE_ISSUE_STATUSES = [
+  "Reported",
+  "Assigned",
+  "Inspection Started",
+  "Maintenance In Progress",
+  "Waiting for Parts",
+  "Reopened",
+];
+
+const getAutoAssignedTechnicianId = async () => {
+  const technicians = await User.find({ role: "technician" })
+    .select("_id createdAt")
+    .sort({ createdAt: 1 })
+    .lean();
+
+  if (technicians.length === 0) {
+    return null;
+  }
+
+  const technicianIds = technicians.map((technician) => technician._id);
+  const activeIssueCounts = await Issue.aggregate([
+    {
+      $match: {
+        assignedTechnician: { $in: technicianIds },
+        status: { $in: ACTIVE_ISSUE_STATUSES },
+      },
+    },
+    {
+      $group: {
+        _id: "$assignedTechnician",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const loadMap = new Map(
+    activeIssueCounts.map((entry) => [entry._id.toString(), entry.count])
+  );
+
+  const availableTechnician = technicians.find(
+    (technician) => (loadMap.get(technician._id.toString()) || 0) === 0
+  );
+
+  if (availableTechnician) {
+    return availableTechnician._id;
+  }
+
+  const leastLoadedTechnician = technicians.reduce((currentBest, technician) => {
+    const currentLoad = loadMap.get(technician._id.toString()) || 0;
+    if (!currentBest) {
+      return { technician, load: currentLoad };
+    }
+
+    if (currentLoad < currentBest.load) {
+      return { technician, load: currentLoad };
+    }
+
+    return currentBest;
+  }, null);
+
+  return leastLoadedTechnician?.technician._id || null;
+};
+
 // POST /api/public/issues/:assetCode (Public)
 export const reportIssue = async (req, res, next) => {
   try {
@@ -13,15 +76,23 @@ export const reportIssue = async (req, res, next) => {
       category,
       priority,
       reporterName,
+      reporterEmail,
       reporterContact,
       aiSuggested,
     } = req.body;
 
     // Validate Input
-    if (!title || !description || !category || !reporterName) {
+    if (!title || !description || !category || !reporterName || !reporterEmail || !reporterContact) {
       return res.status(400).json({
         status: false,
-        message: "Title, description, category, and reporterName are required fields",
+        message: "Title, description, category, reporter name, email, and contact are required fields",
+      });
+    }
+
+    if (!reporterEmail.includes("@")) {
+      return res.status(400).json({
+        status: false,
+        message: "Please enter a valid reporter email address",
       });
     }
 
@@ -36,6 +107,8 @@ export const reportIssue = async (req, res, next) => {
       });
     }
 
+    const assignedTechnician = await getAutoAssignedTechnicianId();
+
     // Create the Issue
     const newIssue = new Issue({
       asset: asset._id,
@@ -43,10 +116,12 @@ export const reportIssue = async (req, res, next) => {
       description,
       category,
       priority: priority || "Medium",
-      status: "Reported",
+      status: assignedTechnician ? "Assigned" : "Reported",
       reporterName,
       reporterContact,
       aiSuggested: aiSuggested || false,
+      assignedTechnician: assignedTechnician || undefined,
+      reporterEmail,
     });
 
     await newIssue.save();
@@ -58,10 +133,14 @@ export const reportIssue = async (req, res, next) => {
     // Log in Asset History
     await logAssetHistory(asset._id, "Issue Reported", null, newIssue._id);
 
+    const populatedIssue = await Issue.findById(newIssue._id)
+      .populate("asset", "name assetCode category location status")
+      .populate("assignedTechnician", "name email role");
+
     return res.status(201).json({
       status: true,
       message: "Issue reported successfully",
-      issue: newIssue,
+      issue: populatedIssue || newIssue,
     });
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -160,6 +239,13 @@ export const assignIssue = async (req, res, next) => {
       return res.status(400).json({
         status: false,
         message: "Assigned technician user not found",
+      });
+    }
+
+    if (technician.role !== "technician") {
+      return res.status(400).json({
+        status: false,
+        message: "Only technicians can be assigned to issues",
       });
     }
 
