@@ -59,7 +59,6 @@ const issueSchema = new mongoose.Schema(
     },
     reporterEmail: {
       type: String,
-      required: [true, "Reporter email is required"],
       trim: true,
       lowercase: true,
     },
