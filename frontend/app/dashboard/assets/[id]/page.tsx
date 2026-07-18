@@ -48,6 +48,7 @@ export default function AssetDetailsPage() {
   const [asset, setAsset] = useState<Asset | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const [assignedTechs, setAssignedTechs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -60,6 +61,27 @@ export default function AssetDetailsPage() {
       const assetRes = await api.get(`/assets/${id}`);
       const assetData = assetRes.data.asset;
       setAsset(assetData);
+
+      // Fetch issues for this asset to get assigned technicians
+      try {
+        const issuesRes = await api.get("/issues");
+        const allIssues = issuesRes.data.issues || [];
+        // Filter active issues for this asset and get unique assigned technicians
+        const activeStatuses = ["Reported", "Assigned", "Inspection Started", "Maintenance In Progress", "Waiting for Parts", "Reopened"];
+        const activeIssues = allIssues.filter(
+          (issue: any) => issue.asset?._id === assetData._id && activeStatuses.includes(issue.status)
+        );
+        const uniqueTechs = Array.from(
+          new Map(
+            activeIssues
+              .filter((issue: any) => issue.assignedTechnician)
+              .map((issue: any) => [issue.assignedTechnician._id, issue.assignedTechnician])
+          ).values()
+        );
+        setAssignedTechs(uniqueTechs);
+      } catch (err) {
+        console.error("Failed to load assigned technicians from issues", err);
+      }
 
       // Fetch asset history
       try {
@@ -220,7 +242,11 @@ export default function AssetDetailsPage() {
                 <div>
                   <span className="block text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase">Assigned Tech</span>
                   <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                    {asset.assignedTechnician ? asset.assignedTechnician.name : "Unassigned"}
+                    {assignedTechs.length > 0
+                      ? assignedTechs.map((tech) => tech.name).join(", ")
+                      : asset.assignedTechnician
+                      ? asset.assignedTechnician.name
+                      : "Unassigned"}
                   </span>
                 </div>
               </div>

@@ -39,8 +39,9 @@ export const createAsset = async (req, res, next) => {
     }
 
     // Validate assignedTechnician exists if provided
-    if (assignedTechnician) {
-      const technicianExists = await User.findById(assignedTechnician);
+    let technicianId = assignedTechnician && assignedTechnician !== "" ? assignedTechnician : null;
+    if (technicianId) {
+      const technicianExists = await User.findById(technicianId);
       if (!technicianExists) {
         return res.status(400).json({
           status: false,
@@ -56,9 +57,9 @@ export const createAsset = async (req, res, next) => {
       location,
       condition,
       status: status || "Operational",
-      assignedTechnician: assignedTechnician || null,
-      lastServiceDate,
-      nextServiceDate,
+      assignedTechnician: technicianId,
+      lastServiceDate: lastServiceDate || null,
+      nextServiceDate: nextServiceDate || null,
     });
 
     await newAsset.save();

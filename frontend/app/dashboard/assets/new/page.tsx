@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import api from "../../../../lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
-
-interface Technician {
-  _id: string;
-  name: string;
-  email: string;
-  role: string;
-}
+import { ArrowLeft, Save, Calendar } from "lucide-react";
 
 export default function NewAssetPage() {
   const router = useRouter();
@@ -23,28 +16,30 @@ export default function NewAssetPage() {
   const [location, setLocation] = useState("");
   const [condition, setCondition] = useState("Good");
   const [status, setStatus] = useState("Operational");
-  const [assignedTechnician, setAssignedTechnician] = useState("");
   const [lastServiceDate, setLastServiceDate] = useState("");
   const [nextServiceDate, setNextServiceDate] = useState("");
 
-  const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTechnicians = async () => {
-      try {
-        const response = await api.get("/user");
-        const allUsers = response.data.data || [];
-        // Filter users with role "technician"
-        const techs = allUsers.filter((u: any) => u.role === "technician");
-        setTechnicians(techs);
-      } catch (err) {
-        console.error("Failed to load technicians list", err);
-      }
-    };
-    fetchTechnicians();
-  }, []);
+  // Refs for date inputs
+  const lastServiceDateRef = useRef<HTMLInputElement>(null);
+  const nextServiceDateRef = useRef<HTMLInputElement>(null);
+
+  const openDatePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
+    const input = ref.current;
+    if (!input) return;
+
+    const pickerInput = input as HTMLInputElement & { showPicker?: () => void };
+
+    if (typeof pickerInput.showPicker === "function") {
+      pickerInput.showPicker();
+      return;
+    }
+
+    input.focus();
+    input.click();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +54,8 @@ export default function NewAssetPage() {
         location,
         condition,
         status,
-        assignedTechnician: assignedTechnician || undefined,
-        lastServiceDate: lastServiceDate || undefined,
-        nextServiceDate: nextServiceDate || undefined,
+        lastServiceDate: lastServiceDate || null,
+        nextServiceDate: nextServiceDate || null,
       };
 
       await api.post("/assets", payload);
@@ -204,44 +198,48 @@ export default function NewAssetPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
-                Assigned Technician (Optional)
-              </label>
-              <select
-                value={assignedTechnician}
-                onChange={(e) => setAssignedTechnician(e.target.value)}
-                className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
-              >
-                <option value="">No Technician Assigned</option>
-                {technicians.map((t) => (
-                  <option key={t._id} value={t._id}>
-                    {t.name} ({t.email})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
                 Last Service Date
               </label>
-              <input
-                type="date"
-                value={lastServiceDate}
-                onChange={(e) => setLastServiceDate(e.target.value)}
-                className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
-              />
+              <div className="relative">
+                <input
+                  ref={lastServiceDateRef}
+                  type="date"
+                  value={lastServiceDate}
+                  onChange={(e) => setLastServiceDate(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 pr-12 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => openDatePicker(lastServiceDateRef)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-500 shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  aria-label="Open last service date picker"
+                >
+                  <Calendar className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
                 Next Service Date
               </label>
-              <input
-                type="date"
-                value={nextServiceDate}
-                onChange={(e) => setNextServiceDate(e.target.value)}
-                className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
-              />
+              <div className="relative">
+                <input
+                  ref={nextServiceDateRef}
+                  type="date"
+                  value={nextServiceDate}
+                  onChange={(e) => setNextServiceDate(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 pr-12 text-sm text-zinc-900 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-950 dark:focus:border-zinc-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => openDatePicker(nextServiceDateRef)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-500 shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  aria-label="Open next service date picker"
+                >
+                  <Calendar className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
 
